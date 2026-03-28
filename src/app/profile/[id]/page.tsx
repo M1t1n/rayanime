@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import AnimeCard from "@/components/AnimeCard";
 import ReviewCard from "@/components/ReviewCard";
 import FollowButton from "./FollowButton";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -58,15 +59,28 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           {user.name[0]?.toUpperCase()}
         </div>
         <div className="flex-1">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <h1 className="text-2xl font-bold text-text-primary">{user.name}</h1>
-            {!isOwn && currentUserId && (
+            {isOwn ? (
+              <Link
+                href="/profile/edit"
+                className="rounded-lg border border-white/10 bg-bg-tertiary px-3 py-1.5 text-xs text-text-secondary transition hover:bg-bg-tertiary/80 hover:text-text-primary"
+              >
+                Edit profile
+              </Link>
+            ) : currentUserId ? (
               <FollowButton userId={user.id} initialFollowing={isFollowing} />
-            )}
+            ) : null}
           </div>
           {user.bio && <p className="mt-1 text-sm text-text-secondary">{user.bio}</p>}
-          <div className="mt-3 flex gap-6 text-sm text-text-muted">
-            <span><strong className="text-text-primary">{user._count.watched}</strong> watched</span>
+          <div className="mt-3 flex flex-wrap gap-6 text-sm text-text-muted">
+            {isOwn ? (
+              <Link href="/watchlist" className="hover:text-text-secondary transition">
+                <strong className="text-text-primary">{user._count.watched}</strong> watched
+              </Link>
+            ) : (
+              <span><strong className="text-text-primary">{user._count.watched}</strong> watched</span>
+            )}
             <span><strong className="text-text-primary">{user._count.reviews}</strong> reviews</span>
             <span><strong className="text-text-primary">{user._count.followers}</strong> followers</span>
             <span><strong className="text-text-primary">{user._count.following}</strong> following</span>

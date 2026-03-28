@@ -19,6 +19,16 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ ok: true, status });
   }
 
+  if (action === "unwatch") {
+    await prisma.watchedAnime.deleteMany({ where: { userId, animeId: params.id } });
+    return NextResponse.json({ ok: true });
+  }
+
+  if (action === "unfavorite") {
+    await prisma.favorite.deleteMany({ where: { userId, animeId: params.id } });
+    return NextResponse.json({ ok: true });
+  }
+
   if (action === "favorite") {
     const existing = await prisma.favorite.findUnique({
       where: { userId_animeId: { userId, animeId: params.id } },

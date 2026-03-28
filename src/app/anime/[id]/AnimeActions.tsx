@@ -41,6 +41,18 @@ export default function AnimeActions({ animeId, userReview, userWatchStatus, use
     }
   }
 
+  async function handleUnwatch() {
+    const res = await fetch(`/api/anime/${animeId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "unwatch" }),
+    });
+    if (res.ok) {
+      setWatchStatus(null);
+      router.refresh();
+    }
+  }
+
   async function handleFavorite() {
     const res = await fetch(`/api/anime/${animeId}`, {
       method: "PUT",
@@ -103,6 +115,15 @@ export default function AnimeActions({ animeId, userReview, userWatchStatus, use
         >
           {favorited ? "♥ Favorited" : "♡ Favorite"}
         </button>
+        {watchStatus && (
+          <button
+            onClick={handleUnwatch}
+            title="Remove from watchlist"
+            className="rounded-lg border border-white/10 bg-bg-tertiary px-3 py-1.5 text-xs text-text-muted transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+          >
+            ✕ Remove
+          </button>
+        )}
       </div>
 
       {!showReviewForm ? (

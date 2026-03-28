@@ -31,6 +31,9 @@ export default function Navbar() {
             <Link href="/search" className="transition hover:text-text-primary">Browse</Link>
             <Link href="/lists" className="transition hover:text-text-primary">Lists</Link>
             {session?.user && (
+              <Link href="/watchlist" className="transition hover:text-text-primary">Watchlist</Link>
+            )}
+            {session?.user && (
               <Link href="/anime/add" className="transition hover:text-text-primary">+ Add Anime</Link>
             )}
           </div>
