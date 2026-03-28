@@ -6,20 +6,24 @@ import Rating from "@/components/Rating";
 
 interface Props {
   animeId: string;
+  totalEpisodes: number | null;
   userReview: { rating: number; content: string | null } | null;
   userWatchStatus: string | null;
+  userEpisodeProgress: number;
   userFavorited: boolean;
   isLoggedIn: boolean;
 }
 
-export default function AnimeActions({ animeId, userReview, userWatchStatus, userFavorited, isLoggedIn }: Props) {
+export default function AnimeActions({ animeId, totalEpisodes, userReview, userWatchStatus, userEpisodeProgress, userFavorited, isLoggedIn }: Props) {
   const router = useRouter();
   const [rating, setRating] = useState(userReview?.rating ?? 0);
   const [content, setContent] = useState(userReview?.content ?? "");
   const [watchStatus, setWatchStatus] = useState(userWatchStatus);
   const [favorited, setFavorited] = useState(userFavorited);
+  const [episodeProgress, setEpisodeProgress] = useState(userEpisodeProgress);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [savingProgress, setSavingProgress] = useState(false);
 
   if (!isLoggedIn) {
     return (
@@ -39,6 +43,22 @@ export default function AnimeActions({ animeId, userReview, userWatchStatus, use
       setWatchStatus(status);
       router.refresh();
     }
+  }
+
+  async function handleProgress(ep: number) {
+    setSavingProgress(true);
+    const res = await fetch(`/api/anime/${animeId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "progress", episode: ep }),
+    });
+    if (res.ok) {
+      setEpisodeProgress(ep);
+      if (ep > 0 && watchStatus !== "WATCHING" && watchStatus !== "COMPLETED") {
+        setWatchStatus("WATCHING");
+      }
+    }
+    setSavingProgress(false);
   }
 
   async function handleUnwatch() {
@@ -125,6 +145,26 @@ export default function AnimeActions({ animeId, userReview, userWatchStatus, use
           </button>
         )}
       </div>
+
+      {/* Episode progress — show when watching or has progress */}
+      {(watchStatus === "WATCHING" || (episodeProgress > 0 && watchStatus !== "COMPLETED")) && totalEpisodes && (
+        <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-bg-secondary p-3">
+          <span className="text-xs text-text-muted shrink-0">Episode progress</span>
+          <input
+            type="range"
+            min={0}
+            max={totalEpisodes}
+            value={episodeProgress}
+            onChange={(e) => setEpisodeProgress(Number(e.target.value))}
+            onMouseUp={(e) => handleProgress(Number((e.target as HTMLInputElement).value))}
+            onTouchEnd={(e) => handleProgress(Number((e.target as HTMLInputElement).value))}
+            className="flex-1 accent-accent-primary"
+          />
+          <span className="text-xs font-semibold text-text-secondary shrink-0 w-16 text-right">
+            {savingProgress ? "…" : `${episodeProgress} / ${totalEpisodes}`}
+          </span>
+        </div>
+      )}
 
       {!showReviewForm ? (
         <button

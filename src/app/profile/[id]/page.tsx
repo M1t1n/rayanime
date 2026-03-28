@@ -6,6 +6,7 @@ import AnimeCard from "@/components/AnimeCard";
 import ReviewCard from "@/components/ReviewCard";
 import FollowButton from "./FollowButton";
 import Link from "next/link";
+import UserStats from "@/components/UserStats";
 
 export const dynamic = "force-dynamic";
 
@@ -87,6 +88,9 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           </div>
         </div>
       </div>
+
+      {/* Stats */}
+      <UserStats userId={user.id} />
 
       {/* Favorites */}
       {user.favorites.length > 0 && (

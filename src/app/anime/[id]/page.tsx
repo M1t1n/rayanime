@@ -105,8 +105,10 @@ export default async function AnimePage({ params }: { params: { id: string } }) 
 
           <AnimeActions
             animeId={anime.id}
+            totalEpisodes={anime.episodes}
             userReview={userReview ? { rating: userReview.rating, content: userReview.content } : null}
             userWatchStatus={userWatched?.status ?? null}
+            userEpisodeProgress={userWatched?.episodeProgress ?? 0}
             userFavorited={userFavorited}
             isLoggedIn={!!userId}
           />

@@ -63,9 +63,10 @@ model Review {
 }
 
 model WatchedAnime {
-  id        String      @id @default(cuid())
-  status    WatchStatus @default(COMPLETED)
-  createdAt DateTime    @default(now())
+  id               String      @id @default(cuid())
+  status           WatchStatus @default(COMPLETED)
+  episodeProgress  Int         @default(0)
+  createdAt        DateTime    @default(now())
 
   userId  String
   user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)

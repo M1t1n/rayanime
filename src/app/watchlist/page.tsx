@@ -35,6 +35,7 @@ export default async function WatchlistPage() {
     acc[status] = entries.filter((e) => e.status === status).map((e) => ({
       watchId: e.id,
       status: e.status,
+      episodeProgress: e.episodeProgress,
       ...e.anime,
     }));
     return acc;

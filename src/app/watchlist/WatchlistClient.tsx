@@ -15,6 +15,7 @@ interface AnimeEntry {
   year: number | null;
   episodes: number | null;
   status: string;
+  episodeProgress: number;
 }
 
 interface Props {
@@ -156,6 +157,18 @@ export default function WatchlistClient({ grouped, statusLabels, statusOrder }: 
                     </span>
                   )}
                 </div>
+                {/* Episode progress bar for Watching */}
+                {entry.status === "WATCHING" && entry.episodes && entry.episodes > 0 && (
+                  <div className="mt-1.5 flex items-center gap-2">
+                    <div className="flex-1 h-1 rounded-full bg-bg-tertiary overflow-hidden max-w-[120px]">
+                      <div
+                        className="h-full rounded-full bg-blue-400/70 transition-all"
+                        style={{ width: `${Math.min(100, (entry.episodeProgress / entry.episodes) * 100)}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-text-muted">{entry.episodeProgress}/{entry.episodes}</span>
+                  </div>
+                )}
               </div>
 
               {/* Status changer + remove — visible on hover */}

@@ -19,6 +19,18 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ ok: true, status });
   }
 
+  if (action === "progress") {
+    const { episode } = await req.json().catch(() => ({}));
+    const ep = parseInt(episode);
+    if (isNaN(ep) || ep < 0) return NextResponse.json({ error: "Invalid episode" }, { status: 400 });
+    await prisma.watchedAnime.upsert({
+      where: { userId_animeId: { userId, animeId: params.id } },
+      create: { userId, animeId: params.id, status: "WATCHING", episodeProgress: ep },
+      update: { episodeProgress: ep },
+    });
+    return NextResponse.json({ ok: true, episodeProgress: ep });
+  }
+
   if (action === "unwatch") {
     await prisma.watchedAnime.deleteMany({ where: { userId, animeId: params.id } });
     return NextResponse.json({ ok: true });
