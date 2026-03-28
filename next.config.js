@@ -5,7 +5,7 @@ const nextConfig = {
       { protocol: "https", hostname: "cdn.myanimelist.net" },
       { protocol: "https", hostname: "api.dicebear.com" },
     ],
-    unoptimized: false,
+    unoptimized: true, // serve images directly from CDN — avoids Vercel free-tier optimization limits
   },
 };
 
